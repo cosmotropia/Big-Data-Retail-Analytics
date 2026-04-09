@@ -1,8 +1,8 @@
 # Big-Data-Retail-Analytics
 
-**Retail Analytics Pipeline** — repositorio del proyecto de evaluación del **Módulo 9: Fundamentos de Big Data**, en el marco del curso de Data Science. La consigna plantea un escenario de **RetailMax** (analítica y machine learning sobre operaciones de e‑commerce): construir un flujo escalable con **Apache Spark** que integre ingesta, transformaciones masivas, **Spark SQL**, y **MLlib**, demostrando competencias en RDDs, DataFrames, consultas SQL y modelado distribuido.
+**Retail Analytics Pipeline** — proyecto de evaluación del **Módulo 9: Fundamentos de Big Data** (Data Science). Consigna **RetailMax**: pipeline escalable con **Apache Spark** (ingesta, transformaciones, **Spark SQL**, **MLlib**), cubriendo RDDs, DataFrames, SQL y modelado distribuido.
 
-Este repositorio implementa ese pipeline sobre datos públicos de comercio electrónico (**dataset Olist**), alineado a los requerimientos del módulo.
+Los datos son el dataset público **Olist** (e‑commerce Brasil), alineado a los requerimientos del módulo.
 
 ---
 
@@ -16,71 +16,65 @@ Este repositorio implementa ese pipeline sobre datos públicos de comercio elect
 6. [Ejecución](#ejecución)
 7. [Contenido por lecciones](#contenido-por-lecciones)
 8. [Resultados y entregables](#resultados-y-entregables)
-9. [Git y publicación en GitHub (cuenta personal)](#git-y-publicación-en-github-cuenta-personal)
+9. [Git (clonar y remoto)](#git-clonar-y-remoto)
 10. [Referencias](#referencias)
 
 ---
 
 ## Introducción
 
-El trabajo cubre, de forma progresiva:
+- Marco Big Data aplicado a retail.
+- **SparkSession** / **SparkContext**, lectura en **RDD**.
+- **RDD** y **Pair RDD** (transformaciones y acciones).
+- **DataFrames**, esquemas, **Spark SQL**, métricas y **Parquet**.
+- **MLlib** (`VectorAssembler`, `StringIndexer`, regresión logística, K-Means).
 
-- Fundamentos y motivación de Big Data en retail.
-- Configuración de **SparkSession** / **SparkContext** y lectura inicial en **RDD**.
-- Manipulación de **RDD** y **Pair RDD** (transformaciones y acciones).
-- **DataFrames**, esquemas explícitos, **Spark SQL**, métricas de negocio y persistencia en **Parquet**.
-- **MLlib**: *features* (p. ej. `VectorAssembler`, `StringIndexer`), **Regresión Logística** y **K-Means**, evaluación y lectura para marketing.
-
-El notebook principal documenta el linaje de operaciones y el uso del motor Spark en modo local (`local[*]`).
+El notebook documenta el flujo en modo local (`local[*]`).
 
 ---
 
 ## Dataset
 
-Se utiliza el **Brazilian E-Commerce (Olist)**: archivos CSV con órdenes, ítems por orden y reseñas, ubicados en la carpeta `data/`:
+**Brazilian E-Commerce (Olist)** — CSV en `data/`:
 
 | Archivo | Rol |
 |--------|-----|
-| `olist_orders_dataset.csv` | Pedidos (estado, fechas, etc.) |
-| `olist_order_items_dataset.csv` | Líneas de pedido (precio, flete, etc.) |
-| `olist_order_reviews_dataset.csv` | Reseñas vinculadas a órdenes |
+| `olist_orders_dataset.csv` | Pedidos |
+| `olist_order_items_dataset.csv` | Líneas de pedido |
+| `olist_order_reviews_dataset.csv` | Reseñas |
 
-Los CSV deben mantenerse en `data/` respecto a la raíz del proyecto para que las rutas del notebook funcionen sin cambios.
+Mantén los archivos bajo `data/` respecto a la raíz del repo para que las rutas del notebook coincidan.
 
 ---
 
 ## Estructura del proyecto
 
-Tras clonar, la **raíz del repositorio** (carpeta `Big-Data-Retail-Analytics` por defecto) contiene:
-
 ```
-Big-Data-Retail-Analytics/    # raíz = root directory del repo
+Big-Data-Retail-Analytics/
 ├── README.md
 ├── requirements.txt
-├── main.ipynb                # Notebook único: lecciones 1–5
-└── data/                     # CSV Olist + salida Parquet al ejecutar
+├── main.ipynb
+└── data/
     ├── olist_orders_dataset.csv
     ├── olist_order_items_dataset.csv
     ├── olist_order_reviews_dataset.csv
-    └── orders_final.parquet  # generado al ejecutar la lección 4
+    └── orders_final.parquet   # generado al ejecutar la lección 4
 ```
 
 ---
 
 ## Requisitos previos
 
-- **Python** 3.10+ (el proyecto se ha usado con 3.12).
-- **JDK** instalado y coherente con la versión de Spark/PySpark que instales (Apache Spark requiere JVM).
-- Herramienta para abrir **Jupyter** / notebooks (VS Code, Cursor, JupyterLab, etc.).
+- Python 3.10+ (probado con 3.12).
+- JDK compatible con tu versión de PySpark.
+- Editor o entorno con soporte Jupyter (VS Code, Cursor, JupyterLab, etc.).
 
 ---
 
 ## Instalación
 
-Desde la **raíz del repositorio** (donde está `requirements.txt`):
-
 ```bash
-git clone git@github.com:cosmotropia/Big-Data-Retail-Analytics.git
+git clone https://github.com/<tu-usuario>/Big-Data-Retail-Analytics.git
 cd Big-Data-Retail-Analytics
 
 python3 -m venv .venv
@@ -88,89 +82,64 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Si usas un host SSH dedicado a tu cuenta personal (p. ej. `github.com-personal`), usa el `clone` con `git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git` una vez configurado `~/.ssh/config` (ver sección [Git](#git-y-publicación-en-github-cuenta-personal)).
-
-Opcional: si ejecutas el notebook fuera del IDE, instala un kernel Jupyter:
-
-```bash
-pip install ipykernel
-```
+Opcional: `pip install ipykernel` si usas kernel Jupyter fuera del IDE.
 
 ---
 
 ## Ejecución
 
 1. Activar el entorno virtual.
-2. Abrir `main.ipynb` y ejecutar las celdas **en orden** desde el inicio (sesión Spark, carga de datos, RDD, SQL, ML).
+2. Abrir `main.ipynb` y ejecutar las celdas **en orden** (Spark → datos → RDD → SQL → ML).
 
-La primera celda crea la `SparkSession` con `master("local[*]")`. Ajusta memoria o `master` solo si tu entorno lo requiere.
+La sesión usa `master("local[*]")` por defecto.
 
 ---
 
 ## Contenido por lecciones
 
-| Lección | Tema principal |
-|--------|----------------|
-| 1 | Marco Big Data, fuentes retail, arquitectura conceptual |
-| 2 | Spark: sesión, RDD, `count` / `take`, validación de datos |
-| 3 | RDD / Pair RDD: `map`, `filter`, `flatMap`, `distinct`, `sortBy`, agregaciones |
-| 4 | DataFrames, SQL, métricas, exportación **Parquet** |
-| 5 | MLlib: pipeline, clasificación, clustering, evaluación |
+| Lección | Tema |
+|--------|------|
+| 1 | Big Data, fuentes retail, arquitectura |
+| 2 | Spark: sesión, RDD, `count` / `take` |
+| 3 | RDD / Pair RDD: `map`, `filter`, `flatMap`, `distinct`, `sortBy` |
+| 4 | DataFrames, SQL, Parquet |
+| 5 | MLlib: pipeline, clasificación, clustering |
 
 ---
 
 ## Resultados y entregables
 
-- **Código**: `main.ipynb` funcional.
-- **Datos procesados**: salida Parquet (p. ej. `data/orders_final.parquet`) tras la etapa SQL.
-- **Análisis**: consultas agregadas (ventas, distribuciones, *top* órdenes, etc.) y métricas de modelos ML según las celdas finales del notebook.
-- **Documentación de entrega**: además de este README, el curso suele pedir **informe en PDF** y material según la rúbrica del módulo 9.
+- Código: `main.ipynb`.
+- Parquet intermedio/final bajo `data/` según el notebook.
+- Entrega académica: suele incluir informe PDF según rúbrica del módulo.
 
 ---
 
-## Git y publicación en GitHub (cuenta personal)
+## Git (clonar y remoto)
 
-Repositorio remoto: **https://github.com/cosmotropia/Big-Data-Retail-Analytics**
+- **HTTPS:** `https://github.com/<tu-usuario>/Big-Data-Retail-Analytics.git`
+- **SSH (recomendado si usas llave):** `git@github.com:<tu-usuario>/Big-Data-Retail-Analytics.git`
 
-Para no mezclar la cuenta de **trabajo** con la **personal**, conviene un host SSH dedicado en `~/.ssh/config`:
+Si tienes **varias cuentas** en GitHub, define en `~/.ssh/config` un `Host` propio (p. ej. `github.com-work`) con `HostName github.com`, `User git` y `IdentityFile` apuntando a la clave correcta; luego usa ese host en la URL del remoto.
 
-```text
-Host github.com-personal
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519_github   # ajusta a tu clave personal
-```
-
-Luego el remoto usa `git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git` en lugar de `git@github.com:...`.
-
-**Subir el proyecto por primera vez** (desde la raíz del repo, con `.venv` en `.gitignore`):
+Primer push típico:
 
 ```bash
-cd Big-Data-Retail-Analytics   # o la ruta local donde tengas el proyecto
 git init
 git add .
-git commit -m "first commit"
+git commit -m "Initial commit"
 git branch -M main
-git remote add origin git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git
+git remote add origin git@github.com:<tu-usuario>/Big-Data-Retail-Analytics.git
 git push -u origin main
 ```
-
-Si ya creaste el repo vacío en GitHub y solo falta enlazar:
-
-```bash
-git remote add origin git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git
-git push -u origin main
-```
-
-*(Si no usas el alias `github.com-personal`, sustituye por `git@github.com:cosmotropia/Big-Data-Retail-Analytics.git`.)*
 
 ---
 
 ## Referencias
 
-- [Apache Spark — documentación](https://spark.apache.org/docs/latest/)
-- Dataset **Olist**: conjunto público ampliamente usado en competencias y docencia (comercio electrónico Brasil).
+- [Apache Spark](https://spark.apache.org/docs/latest/)
+- Dataset [Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle / repositorio público)
 
 ---
 
-*Evaluación — Módulo 9: Fundamentos de Big Data · Retail Analytics Pipeline*
+*Módulo 9 — Fundamentos de Big Data · Retail Analytics Pipeline*
