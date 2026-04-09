@@ -88,7 +88,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Si usas el host SSH `github-personal` (cuenta personal frente a la del trabajo), usa el mismo `clone` pero con `git@github-personal:cosmotropia/Big-Data-Retail-Analytics.git` una vez configurado `~/.ssh/config` (ver sección [Git](#git-y-publicación-en-github-cuenta-personal)).
+Si usas un host SSH dedicado a tu cuenta personal (p. ej. `github.com-personal`), usa el `clone` con `git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git` una vez configurado `~/.ssh/config` (ver sección [Git](#git-y-publicación-en-github-cuenta-personal)).
 
 Opcional: si ejecutas el notebook fuera del IDE, instala un kernel Jupyter:
 
@@ -135,13 +135,13 @@ Repositorio remoto: **https://github.com/cosmotropia/Big-Data-Retail-Analytics**
 Para no mezclar la cuenta de **trabajo** con la **personal**, conviene un host SSH dedicado en `~/.ssh/config`:
 
 ```text
-Host github-personal
+Host github.com-personal
   HostName github.com
   User git
-  IdentityFile ~/.ssh/id_ed25519_personal   # ajusta a tu clave personal
+  IdentityFile ~/.ssh/id_ed25519_github   # ajusta a tu clave personal
 ```
 
-Luego el remoto usa `git@github-personal:cosmotropia/Big-Data-Retail-Analytics.git` en lugar de `git@github.com:...`.
+Luego el remoto usa `git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git` en lugar de `git@github.com:...`.
 
 **Subir el proyecto por primera vez** (desde la raíz del repo, con `.venv` en `.gitignore`):
 
@@ -151,18 +151,18 @@ git init
 git add .
 git commit -m "first commit"
 git branch -M main
-git remote add origin git@github-personal:cosmotropia/Big-Data-Retail-Analytics.git
+git remote add origin git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git
 git push -u origin main
 ```
 
 Si ya creaste el repo vacío en GitHub y solo falta enlazar:
 
 ```bash
-git remote add origin git@github-personal:cosmotropia/Big-Data-Retail-Analytics.git
+git remote add origin git@github.com-personal:cosmotropia/Big-Data-Retail-Analytics.git
 git push -u origin main
 ```
 
-*(Si no usas el alias `github-personal`, sustituye por `git@github.com:cosmotropia/Big-Data-Retail-Analytics.git`.)*
+*(Si no usas el alias `github.com-personal`, sustituye por `git@github.com:cosmotropia/Big-Data-Retail-Analytics.git`.)*
 
 ---
 
